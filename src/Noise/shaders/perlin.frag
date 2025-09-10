@@ -90,7 +90,7 @@ float calculatePerlinNoise(vec2 xy){
 		lerp(v, dotBottomLeft, dotTopLeft),
 		lerp(v, dotBottomRight, dotTopRight));
 
-	return (returnable + 1) * 0.5;
+	return returnable;
 }
 
 
@@ -106,7 +106,7 @@ void main(){
 		actingFrequency *= 2.0;
 		actingAmplitude *= 0.5;
 	}
-
+	noiseValue = (noiseValue+1)*0.5f;
 	vec3 color = vec3(noiseValue);
 	FragColor = vec4(color, 1.0);
 }

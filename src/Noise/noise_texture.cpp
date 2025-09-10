@@ -10,8 +10,8 @@ NoiseTexture::NoiseTexture(int width, int height, GeneratorTypes genType) {
 		if (!shader.loadFromFile("shaders/perlin.frag", sf::Shader::Type::Fragment)) {
 			// Error loading shader
 		}
-		shader.setUniform("oct", 1);
-		shader.setUniform("frequency", 0.005f);
+		shader.setUniform("oct", 4);
+		shader.setUniform("frequency", 0.01f);
 		shader.setUniform("amplitude", 1.0f);
 
 		break;
