@@ -3,7 +3,7 @@
 #include <iostream>
 int main()
 {
-    auto window = sf::RenderWindow(sf::VideoMode({1080, 720}), "CMake SFML Project");
+    auto window = sf::RenderWindow(sf::VideoMode({1080, 720}), "Terrain Generator");
     sf::RectangleShape fullScreenQuad(sf::Vector2f{ 1080, 720});
     window.setFramerateLimit(144);
     NoiseTexture noise = NoiseTexture(1080, 720, GeneratorTypes::NG_PERLIN);
