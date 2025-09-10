@@ -11,11 +11,13 @@ FetchContent_Declare(SFML
     EXCLUDE_FROM_ALL
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
-
+file(COPY ${CMAKE_SOURCE_DIR}/src/Noise/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
 set(SOURCES
     src/main.cpp
- "src/Noise/noise.cpp" "src/Noise/noise_texture.cpp" "src/Math/utilfunc.cpp")
+   "src/Math/utilfunc.cpp"
+   "src/Noise/noise_texture.cpp")
 
 add_executable(main ${SOURCES})
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
+

@@ -3,12 +3,11 @@
 #include <iostream>
 int main()
 {
-    uint16_t width = 640u;
-    uint16_t height = 360u;
-    auto window = sf::RenderWindow(sf::VideoMode({width, height}), "CMake SFML Project");
+    auto window = sf::RenderWindow(sf::VideoMode({640, 360}), "CMake SFML Project");
+    sf::RectangleShape fullScreenQuad(sf::Vector2f{ 640, 360 });
     window.setFramerateLimit(144);
-    NoiseTexture noise = NoiseTexture(width, height, GeneratorTypes::NG_PERLIN);
-    //std::cout << (12 / (float) 10) - (12/10) << std::endl;
+    NoiseTexture noise = NoiseTexture(640, 360, GeneratorTypes::NG_PERLIN);
+
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -20,7 +19,7 @@ int main()
         }
 
         window.clear();
-        window.draw(noise.GetNoiseDrawable());
+        window.draw(fullScreenQuad, &noise.shader);
         window.display();
     }
 }

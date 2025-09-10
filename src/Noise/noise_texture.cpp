@@ -1,32 +1,25 @@
 #include "noise_texture.h"
 
 NoiseTexture::NoiseTexture(int width, int height, GeneratorTypes genType) {
-	image = std::unique_ptr<sf::Image>(new sf::Image(sf::Vector2u(width, height)));
-	texture = sf::Texture();
+	shader = sf::Shader{};
+	if (!shader.isAvailable()) {
+		// Shaders not available in this system
+	}
 	switch (genType) {
 	case GeneratorTypes::NG_PERLIN:
-		generator = std::unique_ptr<NoiseGenerator>(new PerlinNoise(20, 20));
-		break;
-	default:
-		generator = std::unique_ptr<NoiseGenerator>(new WhiteNoise());
-		break;
-	}
-	GenerateNoiseTexture();
-}
-
-sf::Sprite NoiseTexture::GetNoiseDrawable() {
-	sf::Sprite sprite(texture);
-	return sprite;
-}
-
-void NoiseTexture::GenerateNoiseTexture() {
-	sf::Vector2u dimensions = image->getSize();
-	for (int x = 0; x < dimensions.x; x++) {
-		for (int y = 0; y < dimensions.y; y++) {
-			float noiseValue = generator->GetNoiseValue(x, y) * 256.0f;
-			image->setPixel(sf::Vector2u(x,y), sf::Color(noiseValue, noiseValue, noiseValue));
+		if (!shader.loadFromFile("shaders/perlin.frag", sf::Shader::Type::Fragment)) {
+			// Error loading shader
 		}
+		shader.setUniform("oct", 1);
+		shader.setUniform("frequency", 0.005f);
+		shader.setUniform("amplitude", 1.0f);
+
+		break;
+	//default:
+		if (!shader.loadFromFile("shaders/whiteNoise.frag", sf::Shader::Type::Fragment)) {
+			// Error loading shader
+		}
+		break;
 	}
-	generator->Diagnostics();
-	texture.loadFromImage(*image);
+
 }

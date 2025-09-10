@@ -1,49 +1,12 @@
-#include<random>
+#version 460 core
 
-enum class GeneratorTypes {
-	NG_WHITE_NOISE,
-	NG_PERLIN
-};
-
-class NoiseGenerator {
-
-public:
-	virtual float GetNoiseValue(int x, int y) = 0;
-	virtual void SetSeed(int seedValue) = 0;
-    virtual void Diagnostics() = 0;
-protected:
-	int seed;
-};
+uniform int oct;
+uniform float frequency;
+uniform float amplitude;
 
 
-class WhiteNoise : public NoiseGenerator {
-public:
-	WhiteNoise();
-	float GetNoiseValue(int x, int y) override;
-	void SetSeed(int seedValue) override;
-    void Diagnostics() override;
-protected:
-
-private:
-	std::mt19937 generator;
-};
-
-class PerlinNoise : public NoiseGenerator {
-public:
-	PerlinNoise(int gridX, int gridY, int numOctaves=1);
-	float GetNoiseValue(int x, int y) override;
-	void SetSeed(int seedValue) override;
-    void Diagnostics() override;
-private:
-    std::vector<int> GetConstantVector(int val);
-    float CalculatePerlinNoise(float x, float y);
-private:
-    int maxVal;
-    int minVal;
-    int numOctaves;
-    int gridSizeX;
-    int gridSizeY;
-    int permutation[512] = { 151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225,
+out vec4 FragColor;
+int permutation[512] = { 151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225,
                       140,  36, 103,  30,  69, 142,   8,  99,  37, 240,  21,  10,  23, 190,   6, 148,
                       247, 120, 234,  75,   0,  26, 197,  62,  94, 252, 219, 203, 117,  35,  11,  32,
                        57, 177,  33,  88, 237, 149,  56,  87, 174,  20, 125, 136, 171, 168,  68, 175,
@@ -75,4 +38,75 @@ private:
                        81,  51, 145, 235, 249,  14, 239, 107,  49, 192, 214,  31, 181, 199, 106, 157,
                       184,  84, 204, 176, 115, 121,  50,  45, 127,   4, 150, 254, 138, 236, 205,  93,
                       222, 114,  67,  29,  24,  72, 243, 141, 128, 195,  78,  66, 215,  61, 156, 180 };
-};
+
+
+float fade(float t) {
+	return ((6 * t - 15) * t + 10) * t * t * t;
+}
+
+float lerp(float t, float mn, float mx) {
+	return mn + t * (mx - mn);
+}
+
+
+vec2 getConstantVector(int val){
+    int h = val % 4;
+	if (h == 0) {
+		return vec2(1, 1);
+	}
+	else if (h == 1) {
+		return vec2(-1, 1);
+	}
+	else if (h == 2) {
+		return vec2(-1, -1);
+	}
+	else {
+		return vec2(1, -1);
+	}
+}
+
+float calculatePerlinNoise(vec2 xy){
+	ivec2 XY = ivec2(floor(xy));
+
+	vec2 df = xy - XY;
+	vec2 topRight = vec2( df.x - 1.0, df.y - 1.0 );
+	vec2 topLeft = vec2( df.x, df.y - 1.0 );
+	vec2 botRight = vec2( df.x - 1.0, df.y );
+	vec2 botLeft = vec2( df.x, df.y );
+
+	int valueTopRight = permutation[permutation[XY.x+1] + XY.y+1];
+	int valueTopLeft = permutation[permutation[XY.x] + XY.y+1];
+	int valueBottomRight = permutation[permutation[XY.x+1] + XY.y];
+	int valueBottomLeft = permutation[permutation[XY.x] + XY.y];
+
+	float dotTopRight = dot(topRight, getConstantVector(valueTopRight));
+	float dotTopLeft = dot(topLeft, getConstantVector(valueTopLeft));
+	float dotBottomRight = dot(botRight, getConstantVector(valueBottomRight));
+	float dotBottomLeft = dot(botLeft, getConstantVector(valueBottomLeft));
+
+	float u = fade(df.x);
+	float v = fade(df.y);
+	float returnable = lerp(u,
+		lerp(v, dotBottomLeft, dotTopLeft),
+		lerp(v, dotBottomRight, dotTopRight));
+
+	return (returnable + 1) * 0.5;
+}
+
+
+void main(){
+	vec2 pos = gl_FragCoord.xy;
+	float noiseValue = 0;
+	float actingFrequency = frequency;
+	float actingAmplitude = amplitude;
+	for (int i = 0; i<oct; i++){
+		float n = actingAmplitude * calculatePerlinNoise(pos * actingFrequency);
+		noiseValue += n;
+
+		actingFrequency *= 2.0;
+		actingAmplitude *= 0.5;
+	}
+
+	vec3 color = vec3(noiseValue);
+	FragColor = vec4(color, 1.0);
+}
