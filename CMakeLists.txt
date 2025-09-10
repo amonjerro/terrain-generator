@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(SFML)
 
 set(SOURCES
     src/main.cpp
-)
+ "src/Noise/noise.cpp" "src/Noise/noise_texture.cpp")
 
 add_executable(main ${SOURCES})
 target_compile_features(main PRIVATE cxx_std_17)

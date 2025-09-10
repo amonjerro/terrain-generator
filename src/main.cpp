@@ -1,9 +1,13 @@
 #include <SFML/Graphics.hpp>
+#include "Noise/noise_texture.h"
 
 int main()
 {
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
+    uint16_t width = 640u;
+    uint16_t height = 360u;
+    auto window = sf::RenderWindow(sf::VideoMode({width, height}), "CMake SFML Project");
     window.setFramerateLimit(144);
+    NoiseTexture noise = NoiseTexture(width, height, GeneratorTypes::NG_WHITE_NOISE);
 
     while (window.isOpen())
     {
@@ -16,6 +20,7 @@ int main()
         }
 
         window.clear();
+        window.draw(noise.GetNoiseDrawable());
         window.display();
     }
 }
