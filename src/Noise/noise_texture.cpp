@@ -24,9 +24,9 @@ void NoiseTexture::GenerateNoiseTexture() {
 	for (int x = 0; x < dimensions.x; x++) {
 		for (int y = 0; y < dimensions.y; y++) {
 			float noiseValue = generator->GetNoiseValue(x, y) * 256.0f;
-			
 			image->setPixel(sf::Vector2u(x,y), sf::Color(noiseValue, noiseValue, noiseValue));
 		}
 	}
+	generator->Diagnostics();
 	texture.loadFromImage(*image);
 }

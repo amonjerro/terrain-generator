@@ -1,5 +1,6 @@
 #include "noise.h"
 #include "../Math/utilfunc.h"
+#include <iostream>
 
 WhiteNoise::WhiteNoise() {
 	seed = 0;
@@ -15,13 +16,41 @@ void WhiteNoise::SetSeed(int seedValue) {
 	generator = std::mt19937(seed);
 }
 
-PerlinNoise::PerlinNoise(int gridX, int gridY) {
+void WhiteNoise::Diagnostics() {
+
+}
+
+PerlinNoise::PerlinNoise(int gridX, int gridY, int octaves) {
 	gridSizeX = gridX;
 	gridSizeY = gridY;
+	numOctaves = octaves;
+	maxVal = -10000;
+	minVal = 10000;
+}
+
+float PerlinNoise::GetNoiseValue(int x, int y) {
+	float result = 0.0f;
+	float amplitude = 1.0f;
+	float frequency = 0.005f;
+
+	result = CalculatePerlinNoise(x, y);
+	if (result > maxVal) {
+		maxVal = result;
+	}
+	if (result < minVal){
+		minVal = result;
+	}
+
+	return result;
 }
 
 void PerlinNoise::SetSeed(int seedValue) {
 	seed = seedValue;
+}
+
+void PerlinNoise::Diagnostics() {
+	std::cout << "Max value: " << maxVal << std::endl;
+	std::cout << "Min value: " << minVal << std::endl;
 }
 
 std::vector<int> PerlinNoise::GetConstantVector(int val) {
@@ -40,7 +69,7 @@ std::vector<int> PerlinNoise::GetConstantVector(int val) {
 	}
 }
 
-float PerlinNoise::GetNoiseValue(int x, int y) {
+float PerlinNoise::CalculatePerlinNoise(float x, float y) {
 	int lowGridX = x / gridSizeX;
 	lowGridX = lowGridX % 256;
 	int lowGridY = y / gridSizeY;
@@ -70,8 +99,9 @@ float PerlinNoise::GetNoiseValue(int x, int y) {
 
 	float u = Fade(xF);
 	float v = Fade(yF);
-
-	return Lerp(u,
+	float returnable = Lerp(u,
 		Lerp(v, dotBottomLeft, dotTopLeft),
 		Lerp(v, dotBottomRight, dotTopRight));
+
+	return (returnable + 1) * 0.5f;
 }

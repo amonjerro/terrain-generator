@@ -10,7 +10,7 @@ class NoiseGenerator {
 public:
 	virtual float GetNoiseValue(int x, int y) = 0;
 	virtual void SetSeed(int seedValue) = 0;
-
+    virtual void Diagnostics() = 0;
 protected:
 	int seed;
 };
@@ -21,6 +21,7 @@ public:
 	WhiteNoise();
 	float GetNoiseValue(int x, int y) override;
 	void SetSeed(int seedValue) override;
+    void Diagnostics() override;
 protected:
 
 private:
@@ -29,12 +30,17 @@ private:
 
 class PerlinNoise : public NoiseGenerator {
 public:
-	PerlinNoise(int gridX, int gridY);
+	PerlinNoise(int gridX, int gridY, int numOctaves=1);
 	float GetNoiseValue(int x, int y) override;
 	void SetSeed(int seedValue) override;
+    void Diagnostics() override;
 private:
     std::vector<int> GetConstantVector(int val);
+    float CalculatePerlinNoise(float x, float y);
 private:
+    int maxVal;
+    int minVal;
+    int numOctaves;
     int gridSizeX;
     int gridSizeY;
     int permutation[512] = { 151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225,
