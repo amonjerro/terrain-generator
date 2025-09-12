@@ -12,7 +12,8 @@ Below is an image of the type of noise currently being created by the tool.
 
 With color coding, it generates this type of terrain.
 
-<img width="1086" height="723" alt="image" src="https://github.com/user-attachments/assets/7e8b3c32-7794-485e-9199-72baada1b243" />
+<img width="1086" height="721" alt="image" src="https://github.com/user-attachments/assets/f87067ea-2bfd-48a3-9501-d88b6fd5df38" />
+
 
 ## Simulating weather patterns
 
