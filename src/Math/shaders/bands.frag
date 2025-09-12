@@ -32,18 +32,31 @@ float invertNoise(float noiseVal){
 
 vec3 makeWindVector(float direction){
 	float absVal = abs(direction);
+	float xObstacle;
+	float xObstacleHeight;
+	float easiestYOutlet;
+	float yOutletDiff;
+	float originalAngle;
+
 
 	if (direction < 0){
-		float remainingWindX = samples[3] - invertNoise(samples[4])*absVal;
-		float yDirection = samples[0] < samples[6] ? 1 : -1;
-		float zVal = yDirection == 1 ? samples[4] - samples[0] : samples[6] - samples[4];
-		return vec3(remainingWindX, yDirection, zVal);
+		originalAngle = 270;
+		xObstacle = samples[3] > samples[4] ? 1 : 0;
+		xObstacleHeight = abs(samples[3] - samples[4]);
+		easiestYOutlet = samples[0] < samples[6] ? 1 : -1;
+		yOutletDiff = easiestYOutlet == 1 ? samples[0] - samples[4] : samples[6] - samples[4];
 	} else {
-		float remainingWindX = samples[5] - invertNoise(samples[4])*absVal;
-		float yDirection = samples[2] < samples[8] ? 1 : -1;
-		float zVal = yDirection == 1 ? samples[4] - samples[2] : samples[8] - samples[4];
-		return vec3(remainingWindX, yDirection, zVal);
+		originalAngle = 90;
+		xObstacle = samples[5] > samples[4] ? 1 : 0;
+		xObstacleHeight = abs(samples[5] - samples[4]);
+		easiestYOutlet = samples[2] < samples[8] ? -1 : 1;
+		yOutletDiff = easiestYOutlet == -1 ? samples[2] - samples[4] : samples[8] - samples[4];
 	}
+	float xLoss = clamp(((absVal - xObstacleHeight)*xObstacle)/absVal, 0.0, 1.0);
+	//float yLoss = absVal - yOutlet
+	float angleAddition = easiestYOutlet * 45 * xLoss;
+	float finalAngle = radians(originalAngle + angleAddition);
+	return absVal*vec3(cos(finalAngle), sin(finalAngle), 0)*0.5+0.5;
 }
 
 void main(){
@@ -57,8 +70,8 @@ void main(){
 
 	vec3 directionColor = paintWindDirection(pos);
 	vec3 windVector =  makeWindVector(calculateXDirection(pos));
-	//FragColor = vec4(windVectors(calculateWindDirection(pos)), 1);
-	FragColor = vec4(windVector,1);
+	FragColor = vec4(windVector*invertNoise(samples[4]),1);
 	//FragColor = vec4(vec3(samples[4]),1);
+	//FragColor = vec4(calculateXDirection(pos),0,0,1);
 }
 
