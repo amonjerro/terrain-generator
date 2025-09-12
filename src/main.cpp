@@ -7,9 +7,12 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({1080, 720}), "Terrain Generator");
     sf::RectangleShape fullScreenQuad(sf::Vector2f{ 1080, 720});
     window.setFramerateLimit(144);
-    //NoiseTexture noise = NoiseTexture(1080, 720, GeneratorTypes::NG_PERLIN);
-    //noise.SetSeed(12);
+    NoiseTexture noise = NoiseTexture(1080, 720, GeneratorTypes::NG_PERLIN, 0);
+    noise.SetSeed(12);
+    noise.GenerateNoise();
     WeatherSimulation weatherSim = WeatherSimulation();
+    weatherSim.SetNoiseTexture(noise.GetNoiseTexture());
+
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())

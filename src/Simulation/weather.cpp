@@ -11,3 +11,7 @@ WeatherSimulation::WeatherSimulation() {
 	}
 	weatherShader.setUniform("waveScale", 0.025f);
 }
+
+void WeatherSimulation::SetNoiseTexture(const sf::Texture& noiseTex) {
+	weatherShader.setUniform("noiseTex", noiseTex);
+}

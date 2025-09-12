@@ -17,4 +17,4 @@ With color coding, it generates this type of terrain.
 
 ## Simulating weather patterns
 
-The above noise maps can be taken as a height map. Additional layers detailing wind and humidity can be created and combined with each other to create more realistic representations of precipitation and thus simulate the creation or abscense of water sources, rivers and vegetation. Below is the output of a shader showing the interaction between the above noise map plus a wind and humidity layer.
+The above noise maps can be taken as a height map. Additional layers detailing wind and humidity can be created and combined with each other to create more realistic representations of precipitation and thus simulate the creation or abscense of water sources, rivers and vegetation.
