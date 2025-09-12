@@ -12,11 +12,12 @@ NoiseTexture::NoiseTexture(int width, int height, GeneratorTypes genType) {
 		if (!shader.loadFromFile("shaders/perlin.frag", sf::Shader::Type::Fragment)) {
 			// Error loading shader
 		}
-		PermutationShuffle();
+		//PermutationShuffle();
 		shader.setUniform("oct", 4);
 		shader.setUniform("frequency", 0.01f);
 		shader.setUniform("amplitude", 1.0f);
 		shader.setUniformArray("permutation", permutation.data(), permutation.size());
+		shader.setUniform("colorize", 0);
 		break;
 	//default:
 		if (!shader.loadFromFile("shaders/whiteNoise.frag", sf::Shader::Type::Fragment)) {

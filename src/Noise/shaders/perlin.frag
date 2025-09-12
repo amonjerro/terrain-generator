@@ -3,7 +3,7 @@
 uniform int oct;
 uniform float frequency;
 uniform float amplitude;
-
+uniform bool colorize;
 
 out vec4 FragColor;
 uniform float permutation[512];
@@ -95,6 +95,12 @@ void main(){
 		actingAmplitude *= 0.5;
 	}
 	noiseValue = (noiseValue+1)*0.5f;
-	vec3 color = noiseToColor(noiseValue);
+	vec3 color;
+	if (colorize){
+		color = noiseToColor(noiseValue);
+	} else {
+		color = vec3(noiseValue);
+	}
+	
 	FragColor = vec4(color, 1.0);
 }
