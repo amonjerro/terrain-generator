@@ -12,10 +12,11 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 file(COPY ${CMAKE_SOURCE_DIR}/src/Noise/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${CMAKE_SOURCE_DIR}/src/Math/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
 set(SOURCES
     src/main.cpp
    "src/Math/utilfunc.cpp"
-   "src/Noise/noise_texture.cpp")
+   "src/Noise/noise_texture.cpp" "src/Simulation/weather.cpp")
 
 add_executable(main ${SOURCES})
 target_compile_features(main PRIVATE cxx_std_17)
